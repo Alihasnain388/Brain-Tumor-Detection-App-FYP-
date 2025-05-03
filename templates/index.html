@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumor Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="logout-container">
+        <form action="{{ url_for('logout') }}" method="get">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h1>Brain Tumor Detection</h1>
+        <img id="image-preview" src="" alt="Uploaded Image">
+
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" id="image-input" accept="image/*" required>
+            <button type="submit">Upload & Predict</button>
+        </form>
+
+        <div id="prediction-result"></div>
+    </div>
+
+    <script>
+        document.getElementById('image-input').onchange = function(event) {
+            let reader = new FileReader();
+            reader.onload = function() {
+                let img = document.getElementById('image-preview');
+                img.src = reader.result;
+                img.style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        };
+
+        document.getElementById('upload-form').onsubmit = async function(event) {
+            event.preventDefault();
+
+            let fileInput = document.getElementById('image-input');
+            if (fileInput.files.length === 0) {
+                alert("Please select an image.");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            let response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            let result = await response.json();
+            document.getElementById('prediction-result').innerText = 
+                result.error ? "Error: " + result.error : "Prediction: " + result.prediction;
+        };
+    </script>
+</body>
+</html>
