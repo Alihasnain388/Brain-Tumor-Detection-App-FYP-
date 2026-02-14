@@ -18,7 +18,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-Model_Path = os.path.join(os.getcwd(), "C:\\Users\\Ali hasnain\\fyp\\brain_tumor_model(densenet).h5")
+Model_Path = os.path.join(os.getcwd(), "brain_tumor_model(densenet).h5")
 model = tf.keras.models.load_model(Model_Path)
 Class_Labels = ["glioma", "meningioma", "notumor", "pituitary"]
 
